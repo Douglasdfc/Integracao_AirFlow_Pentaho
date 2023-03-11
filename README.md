@@ -66,5 +66,25 @@ nome_arquivo_sh = "home/douglas/etl/temp_sh/teste.sh" # caminho do arquivo tempo
 local = pytz.timezone("America/Sao_Paulo")
 
 ```
+#### Definindo a DAG
 
+Agora vamos definir a DAG:
+```python
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2023, 3, 7, tzinfo = local),
+    'retries': 0,
+}
 
+with DAG(
+    'job_teste',
+    default_args=default_args,
+    schedule_interval='30 3 * * *', # Run every day at 03:30
+) as dag:
+
+```
+Aqui estamos definindo que a DAG começará a ser executada em 7 de março de 2023. 
+Estamos definindo que não haverá novas tentativas de execução, em caso de erro, setando o argumento 'retries': 0, altere esse argumento caso haja a necessidade de tentar novas execuções
+Estamos definindo o nome da DAG como "job_teste", esse é nome que aparecerá no painel de execuções do Airflow
+E estamos definindo no argumento "schedule_interval"
