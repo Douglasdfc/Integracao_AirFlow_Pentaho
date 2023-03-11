@@ -1,4 +1,4 @@
-# Integracao_AirFlow_Pentaho
+# Integracao AirFlow Pentaho
 Com certeza há mais de uma forma de integrar o PDI (Pentaho Data Integration) com o Airflow, para que esse faça a orquestração do jobs e ktrs criados no PDI. 
 Nesse artigo iremos ver uma forma simples, e que com certeza pode ser aprimorada para inserir mais etapas de controle das cargas ou de melhoria do processo, de como executar jobs usando o webserver do Airflow.
 
@@ -8,7 +8,7 @@ O primeiro passo é organizar uma estrutura de pastas para que o processo fique 
 
 Como você já deve saber, o Airflow precisa ser instalado em uma máquina Linux, então toda a estrutura de diretórios e comandos segue a lógica de uma máquina Linux.
 
-Crie uma pasta na raiz do diretório chamada etl dentro dela crie mais duas pastas: jobs e temp_sh. Abra o terminal Linux e digite os seguintes comandos:
+Crie uma pasta na raiz do diretório chamada "etl", dentro dela crie mais duas pastas: "jobs" e "temp_sh". Abra o terminal Linux e digite os seguintes comandos:
 
 ```bash
 cd ~
@@ -27,7 +27,7 @@ Agora se você rodar o comando:
 ```bash
 ls -l
 ```
-será mostrada das duas pastas criadas nos comandos anteriores.
+será mostrada as duas pastas criadas nos comandos anteriores.
 
 A pasta "jobs" receberá os arquivos .kjb e .ktr que você gerou quando criou os ETL's no PDI. 
 A pasta "temp_sh" receberá os arquivos temporários criados pelo airflow que serão usados para executar os jobs. 
@@ -56,8 +56,8 @@ Abaixo iremos definir as variáveis necessárias para a execução da DAG.
 
 * A variável "caminho_kitchen" recebe o caminho do arquivo "kitchen.sh" que está salvo na pasta do PDI, esse arquivo faz o disparo do job. (Caso você esteja executando uma transformação, usar o arquivo "pan.sh"
 * A variável "caminho_kjb" recebe o caminho do arquivo .kjb que será executado, nesse exempplo o job se chama: "job_teste.kjb". Note que salvamos esse arquivo na pasta "jobs" que criamos dentro da pasta etl.
- * A variável "nome_arquivo_sh" recebe recebe o caminho e nome do arquivo temporário .sh que será criado para a execução do Airflow. Note que salvamos esse arquivo na pasta "tem_sh" que criamos dentro da pasta etl.
- * A variável "local" recebe recebe a informação de qual fuso horário o Airflow deve utilizar para executar o job, pois o horário padrão da ferramenta é UTC e no Brasil estamos em UTC-3.
+* A variável "nome_arquivo_sh" recebe recebe o caminho e nome do arquivo temporário .sh que será criado para a execução do Airflow. Note que salvamos esse arquivo na pasta "tem_sh" que criamos dentro da pasta etl.
+* A variável "local" recebe recebe a informação de qual fuso horário o Airflow deve utilizar para executar o job, pois o horário padrão da ferramenta é UTC e no Brasil estamos em UTC-3.
 
 ```python
 caminho_kitchen = "/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh" # Caminho do kitchen.sh (dentro da pasta raiz do PDI)
@@ -84,8 +84,8 @@ with DAG(
 ) as dag:
 
 ```
-Aqui estamos definindo que a DAG começará a ser executada em 7 de março de 2023. 
-Estamos definindo que não haverá novas tentativas de execução, em caso de erro, setando o argumento 'retries': 0, altere esse argumento caso haja a necessidade de tentar novas execuções
+Aqui estamos definindo que a DAG começará a ser executada em 7 de março de 2023, você pode alterar essa data de acordo com sua necessidade.
+Estamos definindo que não haverá novas tentativas de execução em caso de erro, setando o argumento "'retries': 0". Altere esse argumento caso haja a necessidade de tentar novas execuções
 Estamos definindo o nome da DAG como "job_teste", esse é nome que aparecerá no painel de execuções do Airflow
 E estamos definindo no argumento "schedule_interval" para que a DAG seja executada todos os dias às 03:30 da manhã. Esse argumento usa o padrão Crontab, que pode ser entendido melhor [aqui](https://crontab.guru/) ou [aqui](https://crontab.cronhub.io/)
 
@@ -93,7 +93,7 @@ E estamos definindo no argumento "schedule_interval" para que a DAG seja executa
 #### Definindo as Tasks
 A lógica de excução será a seguinte:
 
-Um ETL criado no PDI pode ser executado, sem abrir a sua interface gráfica, executando um arquivo em formato .sh contendo o caminho do kitchen (na execução de jobs) ou o do pan (na execução de ktr) e o caminho do job ou ktr que vamos executar.
+Um ETL criado no PDI pode ser executado sem abrir a sua interface gráfica se chamarmos um arquivo em formato .sh contendo o caminho do kitchen (na execução de jobs) ou o do pan (na execução de ktr) e o caminho do job ou ktr que vamos executar.
 
 Nesse exemplo, iremos executar um job chamado "job_teste.kjb", então o nosso arquivo terá o seguinte conteúdo:
 
@@ -114,6 +114,13 @@ Note que o arquivo só existirá na pasta "temp_sh" enquanto o ETL estiver sendo
 O código que define as Tasks fica dessa forma:
 
 ```python
+   # Task para criar arquivo vazio
+    cria_arquivo = BashOperator(
+
+        task_id="cria_arquivo",
+        bash_command= f'touch "{nome_arquivo_sh}"',
+    )
+
 # Task para preencher arquivo com os caminhos
     def preenche_arquivo():
         with open(nome_arquivo_sh, "w") as f
@@ -148,7 +155,7 @@ O código que define as Tasks fica dessa forma:
     )
 ```
 
-Agora temos que definir em que order as tasks devem ser executadas
+Agora temos que definir em que ordem as tasks devem ser executadas
 
 fazemos isso com o seguinte código:
 
@@ -183,6 +190,15 @@ with DAG(
     default_args=default_args,
     schedule_interval='30 3 * * *', # Run every day at 03:30
 ) as dag:
+
+
+   # Task para criar arquivo vazio
+    cria_arquivo = BashOperator(
+
+        task_id="cria_arquivo",
+        bash_command= f'touch "{nome_arquivo_sh}"',
+    )
+
 
 # Task para preencher arquivo com os caminhos
     def preenche_arquivo():

@@ -22,8 +22,16 @@ with DAG(
     default_args=default_args,
     schedule_interval='30 3 * * *', # Run every day at 03:30
 ) as dag:
+    
 
-# Task para preencher arquivo com os caminhos
+   # Task para criar arquivo vazio
+    cria_arquivo = BashOperator(
+
+        task_id="cria_arquivo",
+        bash_command= f'touch "{nome_arquivo_sh}"',
+    )
+
+    # Task para preencher arquivo com os caminhos
     def preenche_arquivo():
         with open(nome_arquivo_sh, "w") as f
             f.write(f'{caminho_kitchen} /file:{caminho_kjb}')
