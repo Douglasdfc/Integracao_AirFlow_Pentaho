@@ -87,4 +87,6 @@ with DAG(
 Aqui estamos definindo que a DAG começará a ser executada em 7 de março de 2023. 
 Estamos definindo que não haverá novas tentativas de execução, em caso de erro, setando o argumento 'retries': 0, altere esse argumento caso haja a necessidade de tentar novas execuções
 Estamos definindo o nome da DAG como "job_teste", esse é nome que aparecerá no painel de execuções do Airflow
-E estamos definindo no argumento "schedule_interval"
+E estamos definindo no argumento "schedule_interval" para que a DAG seja executada todos os dias às 03:30 da manhã. Esse argumento usa o padrão Crontab, que pode ser entendido melhor [aqui](https://crontab.guru/) ou [aqui](https://crontab.cronhub.io/)
+
+
