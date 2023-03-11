@@ -90,3 +90,14 @@ Estamos definindo o nome da DAG como "job_teste", esse é nome que aparecerá no
 E estamos definindo no argumento "schedule_interval" para que a DAG seja executada todos os dias às 03:30 da manhã. Esse argumento usa o padrão Crontab, que pode ser entendido melhor [aqui](https://crontab.guru/) ou [aqui](https://crontab.cronhub.io/)
 
 
+#### Definindo as Tasks
+A lógica de excução será a seguinte:
+
+Um ETL criado no PDI pode ser executado, sem abrir a sua interface gráfica, executando um arquivo em formato .sh contendo o caminho do kitchen (na execução de jobs) ou o do pan (na execução de ktr) e o caminho do job ou ktr que vamos executar.
+
+Nesse exemplo, iremos executar um job chamado "job_teste.kjb", então o nosso arquivo terá o seguinte conteúdo:
+
+```t
+"/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh" /file: "/home/douglas/etl/jobs/job_teste.kjb"
+```
+Isso é suficiente para que o job seja executado. 
