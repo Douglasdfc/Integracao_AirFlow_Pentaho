@@ -159,7 +159,7 @@ cria_arquivo >> escreve_arquivo >> carga >> remove_arquivo
 O código conpleto fica da seguinte forma:
 
 ```python
-mport os
+import os
 import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
@@ -220,4 +220,4 @@ with DAG(
     cria_arquivo >> escreve_arquivo >> carga >> remove_arquivo
 ```
 
-```
+Salve esse código em um arquivo em formato .py na pasta "dags" que fica do diretório onde você exportou a variável de ambiente do Airflow, dessa forma, a DAG deve aparecer no painel de controle de execuções do Airflow e você pode conferir a execução do seu ETL criado no Pentaho Data Integration.
