@@ -60,8 +60,8 @@ Abaixo iremos definir as variáveis necessárias para a execução da DAG.
 * A variável "local" recebe recebe a informação de qual fuso horário o Airflow deve utilizar para executar o job, pois o horário padrão da ferramenta é UTC e no Brasil estamos em UTC-3.
 
 ```python
-caminho_kitchen = "/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh" # Caminho do kitchen.sh (dentro da pasta raiz do PDI)
-caminho_kjb = '/home/douglas/etl/jobs/job_teste.kjb' # Caminho do JOB que será executado
+caminho_kitchen = '"/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh"' # Caminho do kitchen.sh (dentro da pasta raiz do PDI)
+caminho_kjb = '"/home/douglas/etl/jobs/job_teste.kjb"' # Caminho do JOB que será executado
 nome_arquivo_sh = "home/douglas/etl/temp_sh/teste.sh" # caminho do arquivo temporário que será chamdo pelo AirFlow
 local = pytz.timezone("America/Sao_Paulo")
 
@@ -123,7 +123,7 @@ O código que define as Tasks fica dessa forma:
 
 # Task para preencher arquivo com os caminhos
     def preenche_arquivo():
-        with open(nome_arquivo_sh, "w") as f
+        with open(nome_arquivo_sh, "w") as f:
             f.write(f'{caminho_kitchen} /file:{caminho_kjb}')
         
 
