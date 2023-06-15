@@ -173,7 +173,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-caminho_kitchen = "/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh" # Caminho do kitchen.sh (dentro da pasta raiz do PDI)
+caminho_kitchen = '"/home/douglas/opt/pdi-ce-9.3.0.0-428/data-integration/kitchen.sh"' # Caminho do kitchen.sh (dentro da pasta raiz do PDI)
 caminho_kjb = '"/home/douglas/etl/jobs/job_teste.kjb"' # Caminho do JOB que será executado
 nome_arquivo_sh = "home/douglas/etl/temp_sh/teste.sh" # caminho do arquivo temporário que será chamdo pelo AirFlow
 local = pytz.timezone("America/Sao_Paulo")
